@@ -2,5 +2,25 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "vmName": {
+            "value": "vm-minecraft-01"
+        },
+        "vmSize": {
+            "value": "Standard_B2s"
+        },
+        "nicName": {
+            "value": "nic-minecraft-01"
+        },
+        "vNetName": {
+            "value": "vnet-minecraft-01"
+        },
+        "sshKeySierra": {
+            "reference": {
+                "keyVault": {
+                    "id": "{{KeyvaultId}}"
+                },
+                "secretName": "ssh-sierra-public"
+            }
+        }
     }
 }
