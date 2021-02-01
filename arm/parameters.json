@@ -14,6 +14,9 @@
         "vNetName": {
             "value": "vnet-minecraft-01"
         },
+        "pipName": {
+            "value": "pip-minecraft-01"
+        },
         "sshKeySierra": {
             "reference": {
                 "keyVault": {

@@ -14,6 +14,9 @@
         "vNetName": {
             "type": "string"
         },
+        "pipName": {
+            "type": "string"
+        },
         "sshKeySierra": {
             "type": "securestring"
         }
@@ -21,6 +24,15 @@
     "functions": [],
     "variables": {},
     "resources": [
+        {
+            "type": "Microsoft.Network/publicIPAddresses",
+            "apiVersion": "2020-05-01",
+            "location": "[resourceGroup().location]",
+            "name": "[parameters('pipName')]",
+            "properties": {
+                "publicIPAllocationMethod": "Dynamic"
+            }
+        },
         {
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2020-05-01",
@@ -54,13 +66,17 @@
                         "properties": {
                             "subnet": {
                                 "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vNetName'), 'Subnet')]"
+                            },
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('pipName'))]"
                             }
                         }
                     }
                 ]
             },
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('vNetName'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('vNetName'))]",
+                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('pipName'))]"
             ]
         },
         {
