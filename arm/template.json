@@ -14,6 +14,9 @@
         "vNetName": {
             "type": "string"
         },
+        "nsgName": {
+            "type": "string"
+        },
         "pipName": {
             "type": "string"
         },
@@ -31,6 +34,29 @@
             "name": "[parameters('pipName')]",
             "properties": {
                 "publicIPAllocationMethod": "Dynamic"
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "2020-05-01",
+            "location": "[resourceGroup().location]",
+            "name": "[parameters('nsgName')]",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "MinecraftServer",
+                        "properties": {
+                            "priority": 1000,
+                            "protocol": "Tcp",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourceAddressPrefix": "*",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*",
+                            "destinationPortRange": "25565"
+                        }
+                    }
+                ]
             }
         },
         {
@@ -72,11 +98,15 @@
                             }
                         }
                     }
-                ]
+                ],
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsgName'))]"
+                }
             },
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks', parameters('vNetName'))]",
-                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('pipName'))]"
+                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('pipName'))]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsgName'))]"
             ]
         },
         {
