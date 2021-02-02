@@ -1,4 +1,41 @@
 #cloud-config
+
 package_upgrade: true
 packages:
   - default-jdk
+
+users:
+  - default
+  - name: ahri
+    homedir: /srv/ahri
+    system: true
+
+write_files:
+  - content: |
+      [Unit] 
+      Description=start and stop the Ahri Server
+
+      [Service]
+      WorkingDirectory=/srv/ahri
+      User=ahri
+      Group=ahri
+      Restart=on-failure
+      RestartSec=20 5
+      ExecStart=/usr/bin/java -Xmx2G -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M -jar fabric-server-launch.jar nogui
+
+      [Install]
+      WantedBy=multi-user.target
+    path: /lib/systemd/system/ahri.service
+  - content: eula=true
+    path: /srv/ahri/eula.txt
+
+runcmd:
+  - [ sh, -c, "sudo mkdir -p /srv/ahri/mods" ]
+  - [ sh, -c, "sudo chown -R ahri.ahri /srv/ahri" ]
+  - [ sh, -c, "curl https://maven.fabricmc.net/net/fabricmc/fabric-installer/0.6.1.51/fabric-installer-0.6.1.51.jar -o /srv/ahri/fabric-installer-0.6.1.51.jar" ]
+  - [ sh, -c, "cd /srv/ahri && java -jar fabric-installer-0.6.1.51.jar server -downloadMinecraft" ]
+  - [ sh, -c, "curl -L https://github.com/gnembon/fabric-carpet/releases/download/1.4.25/fabric-carpet-1.16.5-1.4.25+v210203.jar -o /srv/ahri/mods/fabric-carpet-21w03a-1.4.24+v210120.jar" ]
+  - [ sh, -c, "curl -L https://github.com/jellysquid3/lithium-fabric/releases/download/mc1.16.5-0.6.1/lithium-fabric-mc1.16.5-0.6.1.jar -o /srv/ahri/mods/lithium-fabric-mc1.16.5-0.6.1.jar" ]
+  - [ sh, -c, "curl -L https://github.com/jellysquid3/phosphor-fabric/releases/download/mc1.16.2-v0.7.0/phosphor-fabric-mc1.16.3-0.7.0+build.10.jar -o /srv/ahri/mods/phosphor-fabric-mc1.16.3-0.7.0+build.10.jar" ]
+  - sudo systemctl enable ahri.service
+  - sudo systemctl start ahri.service
