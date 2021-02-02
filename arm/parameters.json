@@ -27,6 +27,9 @@
                 },
                 "secretName": "ssh-sierra-public"
             }
+        },
+        "cloudInit": {
+            "value": "{{cloud-init}}"
         }
     }
 }

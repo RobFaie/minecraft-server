@@ -9,7 +9,12 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
-    - run: Get-Content ./arm/parameters.json | % { $_ -replace '{{KeyVaultId}}', '${{ secrets.KEYVAULT_REFERENCEID }}' } | Set-Content ./arm/parameters.json
+    - run: |
+        $cloudInitRaw = Get-Content ./arm/cloud-config.yml -raw
+        $cloudInit64 = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($cloudInitRaw))
+        Get-Content ./arm/parameters.json | % {
+          $_ -replace '{{KeyVaultId}}', '${{ secrets.KEYVAULT_REFERENCEID }}' -replace '{{cloud-init}}', $cloudInit64
+        } | Set-Content ./arm/parameters.json
       shell: pwsh
     - uses: azure/login@v1
       with:
