@@ -28,6 +28,13 @@ write_files:
     path: /lib/systemd/system/ahri.service
   - content: eula=true
     path: /srv/ahri/eula.txt
+  - content: |
+      [{"uuid": "6dd4b404-a05a-4fb7-8a08-6651fda35a7e","name": "Robfaie","level": 4}]
+    path: /srv/ahri/ops.json
+  - content: |
+      [{"uuid":"8390c349-2b2f-49db-bc83-51a1254de572","name":"lisushka"},
+      {"uuid":"6dd4b404-a05a-4fb7-8a08-6651fda35a7e","name":"Robfaie"}]
+    path: /srv/ahri/whitelist.json
 
 runcmd:
   - [ sh, -c, "sudo mkdir -p /srv/ahri/mods" ]
