@@ -47,7 +47,7 @@
             "properties": {
                 "securityRules": [
                     {
-                        "name": "MinecraftServer",
+                        "name": "Ahri",
                         "properties": {
                             "priority": 1000,
                             "protocol": "Tcp",
@@ -57,6 +57,19 @@
                             "sourcePortRange": "*",
                             "destinationAddressPrefix": "*",
                             "destinationPortRange": "25565"
+                        }
+                    },
+                    {
+                        "name": "Sky",
+                        "properties": {
+                            "priority": 1001,
+                            "protocol": "Tcp",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourceAddressPrefix": "*",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*",
+                            "destinationPortRange": "25585"
                         }
                     }
                 ]
