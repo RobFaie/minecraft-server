@@ -1,0 +1,25 @@
+
+on:
+  push: 
+    branches: new
+
+name: Azure ARM
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@main
+
+      - uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: deploy
+        uses: azure/arm-deploy@v1
+        with:
+          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
+          resourceGroupName: rg-minecraft2
+          template: ./arm/main.bicep
+          parameters: count=2
+          failOnStdErr: false
