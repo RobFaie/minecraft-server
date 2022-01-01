@@ -1,0 +1,23 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "name": {
+            "value": "minecraft"
+        },
+        "count": {
+            "value": 2
+        },
+        "adminUsername": {
+            "value": "rob"
+        },
+        "sshKey": {
+            "reference": {
+                "keyVault": {
+                    "id": "{{KeyvaultId}}"
+                },
+                "secretName": "ssh-sierra-public"
+            }
+        }
+    }
+}

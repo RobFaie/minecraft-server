@@ -11,6 +11,12 @@ jobs:
     steps:
       - uses: actions/checkout@main
 
+      - shell: pwsh
+        run: |
+          Get-Content ./arm/parameters.bicep.json | % {
+            $_ -replace '{{KeyVaultId}}', '${{ secrets.KEYVAULT_REFERENCEID }}'
+          } | Set-Content ./arm/parameters.bicep.json
+
       - uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
@@ -21,5 +27,5 @@ jobs:
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
           resourceGroupName: rg-minecraft2
           template: ./arm/main.bicep
-          parameters: count=2
+          parameters: ./arm/parameters.bicep.json
           failOnStdErr: false
