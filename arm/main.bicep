@@ -14,6 +14,8 @@ var subnetName = 'default'
 var nsgName = 'nsg-${name}-${count}'
 var nicName = 'nic-${name}-${count}'
 var vmName = 'vm-${name}-${count}'
+var diskName = 'disk-${name}-${count}'
+
 
 var worlds = [
   /*
@@ -72,6 +74,20 @@ resource nic 'Microsoft.Network/networkInterfaces@2020-11-01' = {
   }
 }
 
+resource dataDisk 'Microsoft.Compute/disks@2021-04-01' = {
+  name: diskName
+  location: location
+  sku: {
+    name: 'StandardSSD_LRS'
+  }
+  properties: {
+    creationData: {
+      createOption: 'Empty'
+    }
+    diskSizeGB: 10
+  }
+}
+
 resource vm 'Microsoft.Compute/virtualMachines@2020-12-01' = {
   name: vmName
   location: location
@@ -104,6 +120,15 @@ resource vm 'Microsoft.Compute/virtualMachines@2020-12-01' = {
       osDisk: {
         createOption: 'FromImage'
       }
+      dataDisks: [
+        {
+          lun: 1
+          createOption: 'Attach'
+          managedDisk:{
+            id: dataDisk.id
+          }
+        }
+      ]
     }
     networkProfile: {
       networkInterfaces: [
@@ -115,3 +140,4 @@ resource vm 'Microsoft.Compute/virtualMachines@2020-12-01' = {
   }
 }
 
+output disk object = dataDisk
